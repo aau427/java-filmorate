@@ -4,7 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class InMemoryUserManager implements UserManager {
@@ -13,7 +16,7 @@ public class InMemoryUserManager implements UserManager {
 
     @Override
     public User createUser(User user) {
-        if(user.getName() == null) {
+        if (user.getName() == null) {
             user.setName(user.getLogin());
         }
         user.setId(getNextId());
@@ -24,13 +27,13 @@ public class InMemoryUserManager implements UserManager {
 
     @Override
     public User updateUser(User user) {
-        if(!usersMap.containsKey(user.getId())) {
+        if (!usersMap.containsKey(user.getId())) {
             String message = "Ошибка при изменении пользователя: не найден пользователь Id = " + user.getId();
             log.error(message);
             throw new ResourceNotFoundException(message);
         }
 
-        if(user.getName() == null) {
+        if (user.getName() == null) {
             user.setName(user.getLogin());
         }
         usersMap.put(user.getId(), user);
