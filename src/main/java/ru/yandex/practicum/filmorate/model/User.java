@@ -4,11 +4,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.exception.CloneException;
 
 import java.time.LocalDate;
 
 @Data
+@EqualsAndHashCode(of = { "id" })
 public class User implements Cloneable {
     /*
     электронная почта не может быть пустой и должна содержать символ @;

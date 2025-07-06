@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.exception.CloneException;
 
 import java.time.LocalDate;
 
 @Data
+@EqualsAndHashCode(of = { "id" })
 public class Film implements Cloneable {
     /*
     название не может быть пустым;

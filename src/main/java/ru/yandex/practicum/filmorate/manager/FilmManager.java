@@ -10,6 +10,4 @@ public interface FilmManager {
     Film updateFilm(final Film film);
 
     List<Film> getFilmsList();
-
-    Film getFilmById(int id);
 }

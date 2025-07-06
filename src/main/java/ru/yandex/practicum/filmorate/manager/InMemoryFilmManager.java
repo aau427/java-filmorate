@@ -45,16 +45,6 @@ public class InMemoryFilmManager implements FilmManager {
         return new ArrayList<>(filmsMap.values());
     }
 
-    @Override
-    public Film getFilmById(int id) {
-        if (!filmsMap.containsKey(id)) {
-            String message = "Ошибка: не найден филь с Id = " + id;
-            log.error(message);
-            throw new ResourceNotFoundException(message);
-        }
-        return filmsMap.get(id).clone();
-    }
-
     private int getNextId() {
         return ++filmId;
     }
