@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.exception.CloneException;
 import java.time.LocalDate;
 
 @Data
-public class Film implements Cloneable{
+public class Film implements Cloneable {
     /*
     название не может быть пустым;
     максимальная длина описания — 200 символов;

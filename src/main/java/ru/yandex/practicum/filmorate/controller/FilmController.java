@@ -2,8 +2,8 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.manager.Managers;
 import ru.yandex.practicum.filmorate.manager.FilmManager;
+import ru.yandex.practicum.filmorate.manager.Managers;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
