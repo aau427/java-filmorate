@@ -28,4 +28,9 @@ public class UserController {
     public User updateUser(@Valid @RequestBody User user) {
         return manager.updateUser(user);
     }
+
+    @DeleteMapping()
+    public void deleteAllUsers() {
+        manager.deleteAllUsers();
+    }
 }

@@ -3,26 +3,23 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import ru.yandex.practicum.filmorate.exception.CloneException;
 
 import java.time.LocalDate;
 
-@Data
-@EqualsAndHashCode(of = { "id" })
+@EqualsAndHashCode(of = {"id"})
+@Getter
+@Builder
 public class User implements Cloneable {
-    /*
-    электронная почта не может быть пустой и должна содержать символ @;
-    логин не может быть пустым и содержать пробелы;
-    имя для отображения может быть пустым — в таком случае будет использован логин;
-    дата рождения не может быть в будущем.
-     */
+    @Setter
     private int id;
     @Email
+    @NotBlank
     private String email;
     @NotBlank
     private String login;
+    @Setter
     private String name;
     @Past
     private LocalDate birthday;

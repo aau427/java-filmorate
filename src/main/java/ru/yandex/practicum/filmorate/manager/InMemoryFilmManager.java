@@ -45,8 +45,14 @@ public class InMemoryFilmManager implements FilmManager {
         return new ArrayList<>(filmsMap.values());
     }
 
+    @Override
+    public void deleteAllFilms() {
+        log.info("Удаляю все фильмы");
+        filmsMap.clear();
+    }
+
     private int getNextId() {
-        return ++filmId;
+        return filmsMap.size() + 1;
     }
 
     private void validateFilm(Film film) {

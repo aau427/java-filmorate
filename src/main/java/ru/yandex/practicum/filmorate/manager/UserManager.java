@@ -10,4 +10,6 @@ public interface UserManager {
     User updateUser(User user);
 
     List<User> getUsersList();
+
+    void deleteAllUsers();
 }

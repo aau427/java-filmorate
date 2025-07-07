@@ -10,4 +10,6 @@ public interface FilmManager {
     Film updateFilm(final Film film);
 
     List<Film> getFilmsList();
+
+    void deleteAllFilms();
 }

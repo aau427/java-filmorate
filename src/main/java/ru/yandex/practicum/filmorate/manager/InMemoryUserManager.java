@@ -47,7 +47,13 @@ public class InMemoryUserManager implements UserManager {
         return new ArrayList<>(usersMap.values());
     }
 
+    @Override
+    public void deleteAllUsers() {
+        log.info("Очистил список пользователей");
+        usersMap.clear();
+    }
+
     private int getNextId() {
-        return ++id;
+        return usersMap.size() + 1;
     }
 }

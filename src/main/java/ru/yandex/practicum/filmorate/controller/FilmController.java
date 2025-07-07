@@ -27,4 +27,9 @@ public class FilmController {
     public Film updateFilm(@Valid @RequestBody Film film) {
         return manager.updateFilm(film);
     }
+
+    @DeleteMapping
+    public void deleteAllFilms() {
+        manager.deleteAllFilms();
+    }
 }
