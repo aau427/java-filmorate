@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import ru.yandex.practicum.filmorate.customannotation.CustomValidDate;
 import ru.yandex.practicum.filmorate.exception.CloneException;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class Film implements Cloneable {
     @Size(max = 200)
     private String description;
     @NotNull
+    @CustomValidDate
     private LocalDate releaseDate;
     @Positive
     private int duration;

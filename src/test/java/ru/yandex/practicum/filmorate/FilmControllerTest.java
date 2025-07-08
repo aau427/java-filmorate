@@ -23,11 +23,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(FilmController.class)
 @AutoConfigureMockMvc
 public class FilmControllerTest {
+    private final LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-    private final LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
 
     @BeforeEach
     public void beforeEach() throws Exception {
@@ -264,8 +264,6 @@ public class FilmControllerTest {
                 .andExpect(status().is(404));
 
     }
-
-
 
 
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/films")
 @RestController
 public class FilmController {
-    final FilmManager manager = Managers.getDefaultFilmManager();
+    private final FilmManager manager = Managers.getDefaultFilmManager();
 
     @GetMapping
     public List<Film> getFilmList() {
