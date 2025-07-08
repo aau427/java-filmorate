@@ -27,7 +27,7 @@ public class User implements Cloneable {
     private String name;
     @Past
     private LocalDate birthday;
-    
+
     @JsonCreator
     public User(int id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
