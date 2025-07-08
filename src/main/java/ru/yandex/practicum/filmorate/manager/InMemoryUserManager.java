@@ -11,14 +11,10 @@ import java.util.Map;
 
 @Slf4j
 public class InMemoryUserManager implements UserManager {
-    private static int id = 0;
     private final Map<Integer, User> usersMap = new HashMap<>();
 
     @Override
     public User createUser(User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
         user.setId(getNextId());
         usersMap.put(user.getId(), user);
         log.info("Создан новый пользователь {}", user.getId());
@@ -31,10 +27,6 @@ public class InMemoryUserManager implements UserManager {
             String message = "Ошибка при изменении пользователя: не найден пользователь Id = " + user.getId();
             log.error(message);
             throw new ResourceNotFoundException(message);
-        }
-
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
         }
         usersMap.put(user.getId(), user);
         log.info("Изменил пользователя: {}", user.getId());
