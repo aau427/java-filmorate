@@ -12,6 +12,8 @@ import ru.yandex.practicum.filmorate.customannotation.CustomValidDate;
 import ru.yandex.practicum.filmorate.exception.CloneException;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @EqualsAndHashCode(of = {"id"})
 @Getter
@@ -29,6 +31,20 @@ public class Film implements Cloneable {
     private LocalDate releaseDate;
     @Positive
     private int duration;
+    //лайки пользователей (юзеров)
+    private final Set<Integer> userLikes = new HashSet<>();
+
+    public void setLike(int userId) {
+        userLikes.add(userId);
+    }
+
+    public void deleteLike(int userId) {
+        userLikes.remove(userId);
+    }
+
+    public int getCountLikes() {
+        return userLikes.size();
+    }
 
     @Override
     public Film clone() {
