@@ -33,6 +33,8 @@ public class FilmControllerTest {
     public void beforeEach() throws Exception {
         mockMvc.perform(
                 delete("/films"));
+        mockMvc.perform(
+                delete("/users"));
     }
 
     @Test
@@ -369,7 +371,7 @@ public class FilmControllerTest {
                 put("/films/1/like/1"));
 
         mockMvc.perform(
-                delete("/films/1/like/1"))
+                        delete("/films/1/like/1"))
                 .andExpect(status().is(200));
     }
 
