@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -261,6 +262,154 @@ public class FilmControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(404));
+    }
 
+    @Test
+    @DisplayName("Пользователь может поставить лайк фильму")
+    public void shouldUserSetLikeToFilm() throws Exception {
+        Film film = Film.builder()
+                .name("фильм")
+                .description("его описание")
+                .duration(10)
+                .releaseDate(LocalDate.of(1970, 10, 5))
+                .build();
+
+        mockMvc.perform(
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        User user = User.builder()
+                .name("Пользователь 1")
+                .email("aaa@mail.ru")
+                .birthday(LocalDate.now().minusYears(25))
+                .login("aaymail")
+                .build();
+
+        mockMvc.perform(
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(put("/films/1/like/1"))
+                .andExpect(status().is(200));
+    }
+
+    @Test
+    @DisplayName("Пользователь не может поставить лайк несуществующему фильму")
+    public void shouldNotUserSetLikeToNotFoundFilm() throws Exception {
+        User user = User.builder()
+                .name("Пользователь 1")
+                .email("aaa@mail.ru")
+                .birthday(LocalDate.now().minusYears(25))
+                .login("aaymail")
+                .build();
+
+        mockMvc.perform(
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(
+                        put("/films/1/like/1"))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    @DisplayName("Нельзя поставить фильму лайк от несуществующего пользователя")
+    public void shouldNotSetLikeToFilmFromNotFoundUser() throws Exception {
+        Film film = Film.builder()
+                .name("фильм")
+                .description("его описание")
+                .duration(10)
+                .releaseDate(LocalDate.of(1970, 10, 5))
+                .build();
+
+        mockMvc.perform(
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                        put("/films/1/like/1"))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    @DisplayName("Пользователь может удалить лайк")
+    public void shouldUserDeleteLike() throws Exception {
+        Film film = Film.builder()
+                .name("фильм")
+                .description("его описание")
+                .duration(10)
+                .releaseDate(LocalDate.of(1970, 10, 5))
+                .build();
+
+        mockMvc.perform(
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        User user = User.builder()
+                .name("Пользователь 1")
+                .email("aaa@mail.ru")
+                .birthday(LocalDate.now().minusYears(25))
+                .login("aaymail")
+                .build();
+
+        mockMvc.perform(
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(
+                put("/films/1/like/1"));
+
+        mockMvc.perform(
+                delete("/films/1/like/1"))
+                .andExpect(status().is(200));
+    }
+
+    @Test
+    @DisplayName("Пользователь не может удалить лайк у несуществующего фильма")
+    public void shouldNotUserDeleteLikeFromNotFoundFilm() throws Exception {
+        Film film = Film.builder()
+                .name("фильм")
+                .description("его описание")
+                .duration(10)
+                .releaseDate(LocalDate.of(1970, 10, 5))
+                .build();
+
+        mockMvc.perform(
+                post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        User user = User.builder()
+                .name("Пользователь 1")
+                .email("aaa@mail.ru")
+                .birthday(LocalDate.now().minusYears(25))
+                .login("aaymail")
+                .build();
+
+        mockMvc.perform(
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(
+                put("/films/1/like/1"));
+
+        mockMvc.perform(
+                delete("/films"));
+
+
+        mockMvc.perform(
+                        delete("/films/1/like/1"))
+                .andExpect(status().is(404));
     }
 }

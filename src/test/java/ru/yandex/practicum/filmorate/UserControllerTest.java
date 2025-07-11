@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -225,5 +226,196 @@ class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(404));
+    }
+
+    @Test
+    @DisplayName("Добавляет в друзья")
+    public void shouldUserAddFriendsList() throws Exception {
+        User user = User.builder()
+                .name("Пользователь 1")
+                .email("first@mail.ru")
+                .birthday(LocalDate.now().minusYears(25))
+                .login("aaymail")
+                .build();
+
+        User friend = User.builder()
+                .name("Друг")
+                .email("friend@mail.ru")
+                .birthday(LocalDate.now().minusYears(24))
+                .login("aabmail")
+                .build();
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(friend))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                        put(path + "/1/friends/2"))
+                .andExpect(status().is(200));
+    }
+
+    @Test
+    @DisplayName("Не добавляет в друзья несуществующего друга")
+    public void shouldNotAddNotExistFriend() throws Exception {
+        User user = User.builder()
+                .name("Пользователь 1")
+                .email("first@mail.ru")
+                .birthday(LocalDate.now().minusYears(25))
+                .login("aaymail")
+                .build();
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+
+        mockMvc.perform(
+                put(path + "/1/friends/2")
+        ).andExpect(status().is(404));
+    }
+
+    @Test
+    @DisplayName("Не добавляет друга несуществующему пользователю")
+    public void shouldNotAddFriendToNotFoundUser() throws Exception {
+        User friend = User.builder()
+                .name("Друг")
+                .email("friend@mail.ru")
+                .birthday(LocalDate.now().minusYears(24))
+                .login("aabmail")
+                .build();
+
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(friend))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                put(path + "/33/friends/1")
+        ).andExpect(status().is(404));
+    }
+
+    @Test
+    @DisplayName("Удаляет из списка друзей")
+    public void shouldDeleteFromUserList() throws Exception {
+        User user = User.builder()
+                .name("Пользователь 1")
+                .email("first@mail.ru")
+                .birthday(LocalDate.now().minusYears(25))
+                .login("aaymail")
+                .build();
+
+        User friend = User.builder()
+                .name("Друг")
+                .email("friend@mail.ru")
+                .birthday(LocalDate.now().minusYears(24))
+                .login("aabmail")
+                .build();
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(friend))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                put(path + "/1/friends/2"));
+
+        mockMvc.perform(
+                        delete(path + "/1/friends/2"))
+                .andExpect(status().is(200));
+    }
+
+    @Test
+    @DisplayName("Не удаляет из списка друзей у несуществующего пользователя")
+    public void shouldNotDeleteFriendFromNotFoundUser() throws Exception {
+        User friend = User.builder()
+                .name("Друг")
+                .email("friend@mail.ru")
+                .birthday(LocalDate.now().minusYears(24))
+                .login("aabmail")
+                .build();
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(friend))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                        delete(path + "/33/friends/1"))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    @DisplayName("Возвращает список друзей")
+    public void shouldReturnFriendsList() throws Exception {
+        User user = User.builder()
+                .name("Пользователь 1")
+                .email("first@mail.ru")
+                .birthday(LocalDate.now().minusYears(25))
+                .login("aaymail")
+                .build();
+
+        User friend1 = User.builder()
+                .name("Друг1")
+                .email("friend1@mail.ru")
+                .birthday(LocalDate.now().minusYears(24))
+                .login("aabmail1")
+                .build();
+
+        User friend2 = User.builder()
+                .name("Друг2")
+                .email("friend2@mail.ru")
+                .birthday(LocalDate.now().minusYears(24))
+                .login("aabmail2")
+                .build();
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(friend1))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                post(path)
+                        .content(objectMapper.writeValueAsString(friend2))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        mockMvc.perform(
+                put(path + "/1/friends/2"));
+
+        mockMvc.perform(
+                put(path + "/1/friends/3"));
+
+        mockMvc.perform(
+                        get(path + "/1/friends"))
+                .andExpect(status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(3));
     }
 }
