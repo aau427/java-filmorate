@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -10,14 +10,10 @@ import java.util.List;
 
 @RequestMapping("/films")
 @RestController
+@RequiredArgsConstructor
 public class FilmController {
     private static final String DEFAULT_FILM_COUNT = "10";
     private final FilmService service;
-
-    @Autowired
-    public FilmController(FilmService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public List<Film> getFilmList() {

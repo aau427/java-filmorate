@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -15,16 +15,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage storage;
     private final UserService userService;
-
-    @Autowired
-    public FilmService(FilmStorage storage, UserService userService) {
-        this.storage = storage;
-        this.userService = userService;
-    }
-
 
     public Film createFilm(final Film film) {
         film.setId(getNextId());
@@ -90,7 +84,10 @@ public class FilmService {
                 return film2.getCountLikes() - film1.getCountLikes();
             }
         });
-        return filmList.stream().filter(x -> x.getCountLikes() != 0).limit(countFilms).collect(Collectors.toList());
+        return filmList.stream()
+                .filter(x -> x.getCountLikes() != 0)
+                .limit(countFilms)
+                .collect(Collectors.toList());
     }
 
     private int getNextId() {

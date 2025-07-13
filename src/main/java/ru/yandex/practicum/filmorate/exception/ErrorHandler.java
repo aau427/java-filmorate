@@ -7,26 +7,25 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice("ru.yandex.practicum.filmorate")
 public class ErrorHandler {
-
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidateException(final ValidationException e) {
-        return new ErrorResponse("Ошибка валидации", e.getMessage());
+    public ErrorResponse handleValidateException(final ValidationException exception) {
+        return new ErrorResponse("Ошибка валидации", exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorResponse handleResourceNotFound(final ResourceNotFoundException e) {
-        return new ErrorResponse("Объект не найден", e.getMessage());
+    public ErrorResponse handleResourceNotFound(final ResourceNotFoundException exception) {
+        return new ErrorResponse("Объект не найден", exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handCloneException(final RuntimeException e) {
-        return new ErrorResponse("внутренняя ошибка сервера", e.getMessage());
+    public ErrorResponse handCloneException(final RuntimeException exception) {
+        return new ErrorResponse("внутренняя ошибка сервера", exception.getMessage());
     }
 
-    public ErrorResponse handOthers(final RuntimeException e) {
-        return new ErrorResponse("Внутренняя ошибка сервера", e.getMessage());
+    public ErrorResponse handOthers(final RuntimeException exception) {
+        return new ErrorResponse("Внутренняя ошибка сервера", exception.getMessage());
     }
 }
