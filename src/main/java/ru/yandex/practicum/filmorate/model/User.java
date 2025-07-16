@@ -11,6 +11,8 @@ import lombok.Setter;
 import ru.yandex.practicum.filmorate.exception.CloneException;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder
 @EqualsAndHashCode(of = {"id"})
@@ -28,6 +30,9 @@ public class User implements Cloneable {
     @Past
     private LocalDate birthday;
 
+
+    private final Set<Integer> friendsList = new HashSet<>();
+
     @JsonCreator
     public User(int id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
@@ -41,6 +46,10 @@ public class User implements Cloneable {
         }
     }
 
+    public void addFriend(int friendId) {
+        friendsList.add(friendId);
+    }
+
     @Override
     public User clone() {
         try {
@@ -48,5 +57,9 @@ public class User implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new CloneException("Ошибка при копировании пользователя!");
         }
+    }
+
+    public void deleteFriend(int friendId) {
+        friendsList.remove(friendId);
     }
 }
