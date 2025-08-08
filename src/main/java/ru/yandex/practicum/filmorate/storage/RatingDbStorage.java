@@ -14,9 +14,7 @@ public class RatingDbStorage extends BaseRepository<Rating> implements RatingSto
     String sqlForAllItems = "SELECT R.ID, R.NAME FROM RATINGS R";
 
     public RatingDbStorage(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate, (resultSet, rowNum) -> {
-            return new Rating(resultSet.getInt("ID"), resultSet.getString("NAME"));
-        });
+        super(jdbcTemplate, (resultSet, rowNum) -> new Rating(resultSet.getInt("ID"), resultSet.getString("NAME")));
     }
 
     @Override
