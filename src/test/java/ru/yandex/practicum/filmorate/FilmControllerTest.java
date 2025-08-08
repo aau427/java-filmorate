@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -45,6 +46,7 @@ public class FilmControllerTest {
                 .description("корректный фильм")
                 .duration(10)
                 .releaseDate(LocalDate.of(1970, 10, 5))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
         mockMvc.perform(
@@ -156,6 +158,7 @@ public class FilmControllerTest {
                 .description(longDescription.toString())
                 .duration(20)
                 .releaseDate(LocalDate.of(1970, 10, 5))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
         mockMvc.perform(
                         post("/films")
@@ -190,6 +193,7 @@ public class FilmControllerTest {
                 .description("описание фильма")
                 .duration(20)
                 .releaseDate(minReleaseDate)
+                .mpa(new Rating(1, "какой-то"))
                 .build();
         mockMvc.perform(
                         post("/films")
@@ -207,6 +211,7 @@ public class FilmControllerTest {
                 .description("описание фильма")
                 .duration(20)
                 .releaseDate(minReleaseDate)
+                .mpa(new Rating(1, "какой-то"))
                 .build();
         mockMvc.perform(
                 post("/films")
@@ -220,6 +225,7 @@ public class FilmControllerTest {
                 .description("изменил описание")
                 .duration(22)
                 .releaseDate(LocalDate.of(2025, 7, 7))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
         mockMvc.perform(
@@ -256,6 +262,7 @@ public class FilmControllerTest {
                 .description("изменил описание")
                 .duration(22)
                 .releaseDate(LocalDate.of(2025, 7, 7))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
         mockMvc.perform(
@@ -274,6 +281,7 @@ public class FilmControllerTest {
                 .description("его описание")
                 .duration(10)
                 .releaseDate(LocalDate.of(1970, 10, 5))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
         mockMvc.perform(
@@ -347,6 +355,7 @@ public class FilmControllerTest {
                 .description("его описание")
                 .duration(10)
                 .releaseDate(LocalDate.of(1970, 10, 5))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
         mockMvc.perform(

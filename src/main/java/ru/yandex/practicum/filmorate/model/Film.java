@@ -13,11 +13,12 @@ import ru.yandex.practicum.filmorate.exception.CloneException;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Builder
 @EqualsAndHashCode(of = {"id"})
 @Getter
-@Builder
 public class Film implements Cloneable {
     @Setter
     private int id;
@@ -30,12 +31,17 @@ public class Film implements Cloneable {
     @CustomValidDate
     private LocalDate releaseDate;
     @Positive
-    private int duration;
-    //лайки пользователей (юзеров)
+    private Integer duration;
     private final Set<Integer> userLikes = new HashSet<>();
+    private Rating mpa;
+    private final LinkedHashSet<Genre> genres = new LinkedHashSet<>();
 
     public void setLike(int userId) {
         userLikes.add(userId);
+    }
+
+    public void setGenre(Genre genre) {
+        genres.add(genre);
     }
 
     public void deleteLike(int userId) {

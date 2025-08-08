@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,6 +17,12 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse handleResourceNotFound(final ResourceNotFoundException exception) {
+        return new ErrorResponse("Объект не найден", exception.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorResponse handleConstraintException(final DataIntegrityViolationException exception) {
         return new ErrorResponse("Объект не найден", exception.getMessage());
     }
 

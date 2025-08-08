@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,10 +23,13 @@ public class User implements Cloneable {
     private int id;
     @Email
     @NotBlank
+    @Size(max = 50)
     private String email;
     @NotBlank
+    @Size(max = 50)
     private String login;
     @Setter
+    @Size(max = 50)
     private String name;
     @Past
     private LocalDate birthday;
