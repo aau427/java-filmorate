@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -13,15 +13,10 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage storage;
     private final UserService userService;
-
-    private FilmService(@Qualifier("FILMDBSSTORAGE") FilmStorage storage,
-                        UserService userService) {
-        this.storage = storage;
-        this.userService = userService;
-    }
 
     public Film createFilm(Film film) {
         Film newFilm = storage.createFilm(film);
