@@ -135,7 +135,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     private List<User> commonGetUserList(SqlRowSet rowSet) {
-        Map<Integer, User> usersMap = new HashMap<>();
+        Map<Integer, User> usersMap = new LinkedHashMap<>();
         while (rowSet.next()) {
             int userId;
             User currentUser;
