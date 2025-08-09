@@ -151,7 +151,7 @@ public class UserDbStorage implements UserStorage {
             }
             usersMap.put(userId, currentUser);
         }
-        return new LinkedList<>(usersMap.values());
+        return new ArrayList<>(usersMap.values());
     }
 
     private User createUser(SqlRowSet rowSet) {
