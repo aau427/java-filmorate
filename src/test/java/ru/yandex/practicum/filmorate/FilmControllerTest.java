@@ -10,12 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.yandex.practicum.filmorate.common.CommonTestUtility;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -220,7 +220,7 @@ public class FilmControllerTest {
                         .content(objectMapper.writeValueAsString(film))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
-        int idFilm = getIdFromMvcResult(result);
+        int idFilm = CommonTestUtility.getIdFromMvcResult(result);
 
         film = Film.builder()
                 .id(idFilm)
@@ -292,7 +292,7 @@ public class FilmControllerTest {
                         .content(objectMapper.writeValueAsString(film))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
-        int filmId = getIdFromMvcResult(resultFilm);
+        int filmId = CommonTestUtility.getIdFromMvcResult(resultFilm);
 
         User user = User.builder()
                 .name("Пользователь 1")
@@ -305,7 +305,7 @@ public class FilmControllerTest {
                                 .content(objectMapper.writeValueAsString(user))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int userId = getIdFromMvcResult(resultUser);
+        int userId = CommonTestUtility.getIdFromMvcResult(resultUser);
 
         mockMvc.perform(put("/films/" + filmId + "/like/" + userId))
                 .andExpect(status().is(200));
@@ -368,7 +368,7 @@ public class FilmControllerTest {
                                 .content(objectMapper.writeValueAsString(film))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int filmId = getIdFromMvcResult(resultFilm);
+        int filmId = CommonTestUtility.getIdFromMvcResult(resultFilm);
 
         User user = User.builder()
                 .name("Пользователь 1")
@@ -383,7 +383,7 @@ public class FilmControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        int userId = getIdFromMvcResult(resultUser);
+        int userId = CommonTestUtility.getIdFromMvcResult(resultUser);
 
         mockMvc.perform(
                 put("/films/" + filmId + "/like/" + userId));
@@ -431,11 +431,5 @@ public class FilmControllerTest {
         mockMvc.perform(
                         delete("/films/1/like/1"))
                 .andExpect(status().is(404));
-    }
-
-    private int getIdFromMvcResult(MvcResult result) throws UnsupportedEncodingException {
-        String[] contentArray = result.getResponse().getContentAsString().split(",");
-        String[] idObj = contentArray[0].split(":");
-        return Integer.parseInt(idObj[1]);
     }
 }

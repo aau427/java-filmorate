@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
@@ -19,14 +20,16 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        String sql = "insert into users(id, email, login, name, birthdate) " +
-                "values (?, ?, ?,?,?)";
-        jdbcTemplate.update(sql,
-                user.getId(),
-                user.getEmail(),
-                user.getLogin(),
-                user.getName(),
-                user.getBirthday());
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).withTableName("USERS")
+                .usingGeneratedKeyColumns("ID");
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("EMAIL", user.getEmail());
+        parameters.put("LOGIN", user.getLogin());
+        parameters.put("NAME", user.getName());
+        parameters.put("BIRTHDATE", user.getBirthday());
+
+        int userId = (int) jdbcInsert.executeAndReturnKey(parameters);
+        user.setId(userId);
         return user;
     }
 

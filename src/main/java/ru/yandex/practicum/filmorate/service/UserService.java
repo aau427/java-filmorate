@@ -18,7 +18,6 @@ public class UserService {
     private final UserStorage storage;
 
     public User createUser(final User user) {
-        user.setId(getNextId());
         User newUser = storage.createUser(user);
         log.info("Service: Создан новый пользователь {}", newUser.getId());
         return newUser.clone();
@@ -73,9 +72,5 @@ public class UserService {
         User user = getUserById(id);
         User otherUser = getUserById(otherId);
         return storage.getCommonFriends(user, otherUser);
-    }
-
-    private int getNextId() {
-        return getUsersList().size() + 1;
     }
 }
