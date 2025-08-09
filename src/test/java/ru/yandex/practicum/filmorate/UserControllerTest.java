@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.yandex.practicum.filmorate.common.CommonTestUtility;
+import ru.yandex.practicum.filmorate.common.CommonUtility;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -188,7 +188,7 @@ class UserControllerTest {
                                 .content(objectMapper.writeValueAsString(user))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int userId = CommonTestUtility.getIdFromMvcResult(userResult);
+        int userId = CommonUtility.getIdFromMvcResult(userResult);
 
         user = User.builder()
                 .id(userId)
@@ -251,14 +251,14 @@ class UserControllerTest {
                                 .content(objectMapper.writeValueAsString(user))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int userId = CommonTestUtility.getIdFromMvcResult(userResult);
+        int userId = CommonUtility.getIdFromMvcResult(userResult);
 
         userResult = mockMvc.perform(
                         post(path)
                                 .content(objectMapper.writeValueAsString(friend))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int friendId = CommonTestUtility.getIdFromMvcResult(userResult);
+        int friendId = CommonUtility.getIdFromMvcResult(userResult);
 
         mockMvc.perform(
                         put(path + "/" + userId + "/friends/" + friendId))
@@ -331,14 +331,14 @@ class UserControllerTest {
                                 .content(objectMapper.writeValueAsString(user))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int userId = CommonTestUtility.getIdFromMvcResult(userResult);
+        int userId = CommonUtility.getIdFromMvcResult(userResult);
 
         userResult = mockMvc.perform(
                         post(path)
                                 .content(objectMapper.writeValueAsString(friend))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int friendId = CommonTestUtility.getIdFromMvcResult(userResult);
+        int friendId = CommonUtility.getIdFromMvcResult(userResult);
 
         mockMvc.perform(
                 put(path + "/" + userId + "/friends/" + friendId));
@@ -398,21 +398,21 @@ class UserControllerTest {
                                 .content(objectMapper.writeValueAsString(user))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int userId = CommonTestUtility.getIdFromMvcResult(resultUser);
+        int userId = CommonUtility.getIdFromMvcResult(resultUser);
 
         resultUser = mockMvc.perform(
                         post(path)
                                 .content(objectMapper.writeValueAsString(friend1))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int friend1Id = CommonTestUtility.getIdFromMvcResult(resultUser);
+        int friend1Id = CommonUtility.getIdFromMvcResult(resultUser);
 
         resultUser = mockMvc.perform(
                         post(path)
                                 .content(objectMapper.writeValueAsString(friend2))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int friend2Id = CommonTestUtility.getIdFromMvcResult(resultUser);
+        int friend2Id = CommonUtility.getIdFromMvcResult(resultUser);
 
         mockMvc.perform(
                 put(path + "/" + userId + "/friends/" + friend1Id));

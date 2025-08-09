@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.yandex.practicum.filmorate.common.CommonTestUtility;
+import ru.yandex.practicum.filmorate.common.CommonUtility;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Rating;
@@ -220,7 +220,7 @@ public class FilmControllerTest {
                         .content(objectMapper.writeValueAsString(film))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
-        int idFilm = CommonTestUtility.getIdFromMvcResult(result);
+        int idFilm = CommonUtility.getIdFromMvcResult(result);
 
         film = Film.builder()
                 .id(idFilm)
@@ -292,7 +292,7 @@ public class FilmControllerTest {
                         .content(objectMapper.writeValueAsString(film))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
-        int filmId = CommonTestUtility.getIdFromMvcResult(resultFilm);
+        int filmId = CommonUtility.getIdFromMvcResult(resultFilm);
 
         User user = User.builder()
                 .name("Пользователь 1")
@@ -305,7 +305,7 @@ public class FilmControllerTest {
                                 .content(objectMapper.writeValueAsString(user))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int userId = CommonTestUtility.getIdFromMvcResult(resultUser);
+        int userId = CommonUtility.getIdFromMvcResult(resultUser);
 
         mockMvc.perform(put("/films/" + filmId + "/like/" + userId))
                 .andExpect(status().is(200));
@@ -368,7 +368,7 @@ public class FilmControllerTest {
                                 .content(objectMapper.writeValueAsString(film))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        int filmId = CommonTestUtility.getIdFromMvcResult(resultFilm);
+        int filmId = CommonUtility.getIdFromMvcResult(resultFilm);
 
         User user = User.builder()
                 .name("Пользователь 1")
@@ -383,7 +383,7 @@ public class FilmControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        int userId = CommonTestUtility.getIdFromMvcResult(resultUser);
+        int userId = CommonUtility.getIdFromMvcResult(resultUser);
 
         mockMvc.perform(
                 put("/films/" + filmId + "/like/" + userId));
