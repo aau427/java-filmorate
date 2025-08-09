@@ -24,7 +24,6 @@ public class FilmService {
     }
 
     public Film createFilm(Film film) {
-        film.setId(getNextId());
         Film newFilm = storage.createFilm(film);
         log.info("Создан новый фильм {}", newFilm.getId());
         return newFilm.clone();
@@ -79,9 +78,5 @@ public class FilmService {
             throw new ValidationException("Количество фильмов не может быть отрицательным!");
         }
         return storage.getTopFilmsByLikes(countFilms);
-    }
-
-    private int getNextId() {
-        return getFilmsList().size() + 1;
     }
 }

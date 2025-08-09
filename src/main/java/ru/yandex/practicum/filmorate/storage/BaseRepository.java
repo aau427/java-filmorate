@@ -15,7 +15,6 @@ public class BaseRepository<T> {
 
     protected Optional<T> getItemById(String sql, int id) {
         try {
-            Optional<T> t = Optional.ofNullable(jdbcTemplate.queryForObject(sql, mapper, id));
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, mapper, id));
         } catch (DataAccessException exception) {
             return Optional.empty();

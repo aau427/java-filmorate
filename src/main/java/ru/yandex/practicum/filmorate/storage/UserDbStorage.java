@@ -155,7 +155,7 @@ public class UserDbStorage implements UserStorage {
     private User createUser(SqlRowSet rowSet) {
         return User.builder()
                 .id(rowSet.getInt("USER_ID"))
-                .name(rowSet.getString("USER_EMAIL"))
+                .email(rowSet.getString("USER_EMAIL"))
                 .login(rowSet.getString("USER_LOGIN"))
                 .name(rowSet.getString("USER_NAME"))
                 .birthday(rowSet.getDate("USER_DATE").toLocalDate())

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -22,13 +23,16 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        String sql = "INSERT INTO FILMS (id, name, description, releasedate, duration, rating) "
-                + "values (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, film.getId(), film.getName(),
-                film.getDescription(),
-                film.getReleaseDate(),
-                film.getDuration(),
-                film.getMpa().getId());
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).withTableName("FILMS")
+                .usingGeneratedKeyColumns("ID");
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("NAME", film.getName());
+        parameters.put("DESCRIPTION", film.getDescription());
+        parameters.put("RELEASEDATE", film.getReleaseDate());
+        parameters.put("DURATION", film.getDuration());
+        parameters.put("RATING", film.getMpa().getId());
+        int filmId = (int) jdbcInsert.executeAndReturnKey(parameters);
+        film.setId(filmId);
         insertAllGenresToFilm(film);
         return film;
     }
@@ -196,7 +200,7 @@ public class FilmDbStorage implements FilmStorage {
                 .description(rowSet.getString("FILM_DESCRIPTION"))
                 .releaseDate(rowSet.getDate("FILM_DATE").toLocalDate())
                 .duration(rowSet.getInt("FILM_DURATION"))
-                .mpa(new Rating(rowSet.getInt("MPA_ID"),rowSet.getString("MPA_NAME")))
+                .mpa(new Rating(rowSet.getInt("MPA_ID"), rowSet.getString("MPA_NAME")))
                 .build();
     }
 
