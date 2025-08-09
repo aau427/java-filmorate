@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +32,6 @@ public class UserService {
     public List<User> getUsersList() {
         List<User> userList = storage.getUsersList();
         log.info("Service: Отгрузил пользователй в количестве {}", userList.size());
-        userList.sort(Comparator.comparingInt(User::getId));
         return userList;
     }
 
