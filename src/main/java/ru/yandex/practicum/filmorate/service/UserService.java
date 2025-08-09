@@ -7,10 +7,8 @@ import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -19,23 +17,22 @@ public class UserService {
     private final UserStorage storage;
 
     public User createUser(final User user) {
-        user.setId(getNextId());
         User newUser = storage.createUser(user);
         log.info("Service: Создан новый пользователь {}", newUser.getId());
-        return newUser.clone();
+        return newUser;
     }
 
     public User updateUser(final User user) {
         User userTmp = getUserById(user.getId());
         userTmp = storage.updateUser(user);
         log.info("Service: Изменил пользователя: {}", userTmp.getId());
-        return userTmp.clone();
+        return userTmp;
     }
 
     public List<User> getUsersList() {
         List<User> userList = storage.getUsersList();
         log.info("Service: Отгрузил пользователй в количестве {}", userList.size());
-        return new ArrayList<>(userList);
+        return userList;
     }
 
     public void deleteAllUsers() {
@@ -56,35 +53,23 @@ public class UserService {
     public void addFriendToUser(int userId, int friendId) {
         User user = getUserById(userId);
         User friend = getUserById(friendId);
-        user.addFriend(friendId);
-        friend.addFriend(userId);
+        storage.addFriendToUser(user, friendId);
     }
 
     public List<User> getFriendsList(int userId) {
         User user = getUserById(userId);
-        return user.getFriendsList().stream().map(this::getUserById).collect(Collectors.toList());
+        return storage.getFriendsList(user);
     }
 
     public void deleteFriend(int userId, int friendId) {
         User user = getUserById(userId);
         User friend = getUserById(friendId);
-        user.deleteFriend(friendId);
-        friend.deleteFriend(userId);
+        storage.deleteFriendFromUser(user, friendId);
     }
 
     public List<User> getCommonFriends(int id, int otherId) {
-        List<User> usersFriends = getFriendsList(id);
-        List<User> othersFriends = getFriendsList(otherId);
-        if (usersFriends.size() < othersFriends.size()) {
-            return usersFriends.stream().filter(othersFriends::contains)
-                    .collect(Collectors.toList());
-        } else {
-            return othersFriends.stream().filter(usersFriends::contains)
-                    .collect(Collectors.toList());
-        }
-    }
-
-    private int getNextId() {
-        return getUsersList().size() + 1;
+        User user = getUserById(id);
+        User otherUser = getUserById(otherId);
+        return storage.getCommonFriends(user, otherUser);
     }
 }

@@ -6,11 +6,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ru.yandex.practicum.filmorate.common.CommonUtility;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -21,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
 @SpringBootTest
 class UserControllerTest {
     @Autowired
@@ -181,15 +185,15 @@ class UserControllerTest {
                 .birthday(LocalDate.now().minusYears(25))
                 .login("aaymail")
                 .build();
-
-        mockMvc.perform(
-                post(path)
-                        .content(objectMapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+        MvcResult userResult = mockMvc.perform(
+                        post(path)
+                                .content(objectMapper.writeValueAsString(user))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int userId = CommonUtility.getIdFromMvcResult(userResult);
 
         user = User.builder()
-                .id(1)
+                .id(userId)
                 .name("Изменил имя")
                 .email("changed@mail.ru")
                 .birthday(LocalDate.now().minusYears(25))
@@ -202,7 +206,7 @@ class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.name").value("Изменил имя"))
                 .andExpect(jsonPath("$.login").value("aaymail"))
                 .andExpect(jsonPath("$.email").value("changed@mail.ru"))
@@ -244,21 +248,22 @@ class UserControllerTest {
                 .birthday(LocalDate.now().minusYears(24))
                 .login("aabmail")
                 .build();
+        MvcResult userResult = mockMvc.perform(
+                        post(path)
+                                .content(objectMapper.writeValueAsString(user))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int userId = CommonUtility.getIdFromMvcResult(userResult);
+
+        userResult = mockMvc.perform(
+                        post(path)
+                                .content(objectMapper.writeValueAsString(friend))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int friendId = CommonUtility.getIdFromMvcResult(userResult);
 
         mockMvc.perform(
-                post(path)
-                        .content(objectMapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        mockMvc.perform(
-                post(path)
-                        .content(objectMapper.writeValueAsString(friend))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        mockMvc.perform(
-                        put(path + "/1/friends/2"))
+                        put(path + "/" + userId + "/friends/" + friendId))
                 .andExpect(status().is(200));
     }
 
@@ -323,23 +328,25 @@ class UserControllerTest {
                 .login("aabmail")
                 .build();
 
-        mockMvc.perform(
-                post(path)
-                        .content(objectMapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+        MvcResult userResult = mockMvc.perform(
+                        post(path)
+                                .content(objectMapper.writeValueAsString(user))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int userId = CommonUtility.getIdFromMvcResult(userResult);
+
+        userResult = mockMvc.perform(
+                        post(path)
+                                .content(objectMapper.writeValueAsString(friend))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int friendId = CommonUtility.getIdFromMvcResult(userResult);
 
         mockMvc.perform(
-                post(path)
-                        .content(objectMapper.writeValueAsString(friend))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+                put(path + "/" + userId + "/friends/" + friendId));
 
         mockMvc.perform(
-                put(path + "/1/friends/2"));
-
-        mockMvc.perform(
-                        delete(path + "/1/friends/2"))
+                        delete(path + "/" + userId + "/friends/" + friendId))
                 .andExpect(status().is(200));
     }
 
@@ -388,34 +395,37 @@ class UserControllerTest {
                 .login("aabmail2")
                 .build();
 
-        mockMvc.perform(
-                post(path)
-                        .content(objectMapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+        MvcResult resultUser = mockMvc.perform(
+                        post(path)
+                                .content(objectMapper.writeValueAsString(user))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int userId = CommonUtility.getIdFromMvcResult(resultUser);
+
+        resultUser = mockMvc.perform(
+                        post(path)
+                                .content(objectMapper.writeValueAsString(friend1))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int friend1Id = CommonUtility.getIdFromMvcResult(resultUser);
+
+        resultUser = mockMvc.perform(
+                        post(path)
+                                .content(objectMapper.writeValueAsString(friend2))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int friend2Id = CommonUtility.getIdFromMvcResult(resultUser);
 
         mockMvc.perform(
-                post(path)
-                        .content(objectMapper.writeValueAsString(friend1))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+                put(path + "/" + userId + "/friends/" + friend1Id));
 
         mockMvc.perform(
-                post(path)
-                        .content(objectMapper.writeValueAsString(friend2))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+                put(path + "/" + userId + "/friends/" + friend2Id));
 
         mockMvc.perform(
-                put(path + "/1/friends/2"));
-
-        mockMvc.perform(
-                put(path + "/1/friends/3"));
-
-        mockMvc.perform(
-                        get(path + "/1/friends"))
+                        get(path + "/" + userId + "/friends"))
                 .andExpect(status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(3));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(friend1Id))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(friend2Id));
     }
 }
