@@ -19,14 +19,14 @@ public class UserService {
     public User createUser(final User user) {
         User newUser = storage.createUser(user);
         log.info("Service: Создан новый пользователь {}", newUser.getId());
-        return newUser.clone();
+        return newUser;
     }
 
     public User updateUser(final User user) {
         User userTmp = getUserById(user.getId());
         userTmp = storage.updateUser(user);
         log.info("Service: Изменил пользователя: {}", userTmp.getId());
-        return userTmp.clone();
+        return userTmp;
     }
 
     public List<User> getUsersList() {

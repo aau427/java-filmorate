@@ -21,14 +21,14 @@ public class FilmService {
     public Film createFilm(Film film) {
         Film newFilm = storage.createFilm(film);
         log.info("Создан новый фильм {}", newFilm.getId());
-        return newFilm.clone();
+        return newFilm;
     }
 
     public Film updateFilm(Film film) {
         Film tmpFilm = getFilmById(film.getId());
         tmpFilm = storage.updateFilm(film);
         log.info("Изменил фильм: {}", tmpFilm.getId());
-        return tmpFilm.clone();
+        return tmpFilm;
     }
 
     public List<Film> getFilmsList() {
