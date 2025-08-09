@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -12,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 
 @Component
-@Qualifier("USERDBSTORAGE")
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
 
@@ -72,7 +70,8 @@ public class UserDbStorage implements UserStorage {
                 + "FR.ID FRIEND_ID "
                 + "FROM USERS U "
                 + "LEFT JOIN FRIENDSHIPS FS ON U.ID = FS.USER_ID AND FS.ACCEPTED = TRUE "
-                + "LEFT JOIN USERS FR ON FS.FRIEND = FR.ID ";
+                + "LEFT JOIN USERS FR ON FS.FRIEND = FR.ID "
+                + "ORDER BY U.ID";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql);
         return commonGetUserList(rowSet);
     }

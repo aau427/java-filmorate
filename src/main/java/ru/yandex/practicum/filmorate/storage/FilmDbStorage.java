@@ -62,7 +62,8 @@ public class FilmDbStorage implements FilmStorage {
                 + "LEFT JOIN FILMLIKES Fl on FL.FILM_ID = F.ID "
                 + "LEFT JOIN FILMSGENRES FG on F.ID = FG.FILM_ID  "
                 + "lEFT JOIN GENRES G ON FG.GENRE_ID = G.ID "
-                + "LEFT JOIN RATINGS R on F.RATING = R.ID";
+                + "LEFT JOIN RATINGS R on F.RATING = R.ID "
+                + "ORDER BY F.ID";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql);
         return getFilmListFromRowSet(rowSet);
     }
