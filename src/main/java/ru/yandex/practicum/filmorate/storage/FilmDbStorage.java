@@ -189,7 +189,7 @@ public class FilmDbStorage implements FilmStorage {
             }
             filmsMap.put(filmId, currentFilm);
         }
-        return new ArrayList<>(filmsMap.values());
+        return new LinkedList<>(filmsMap.values());
     }
 
     private Film createFilm(SqlRowSet rowSet) {
