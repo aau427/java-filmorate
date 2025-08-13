@@ -9,16 +9,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import ru.yandex.practicum.filmorate.customannotation.CustomValidDate;
-import ru.yandex.practicum.filmorate.exception.CloneException;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Builder
 @EqualsAndHashCode(of = {"id"})
 @Getter
-@Builder
-public class Film implements Cloneable {
+public class Film {
     @Setter
     private int id;
     @NotBlank
@@ -30,12 +30,18 @@ public class Film implements Cloneable {
     @CustomValidDate
     private LocalDate releaseDate;
     @Positive
-    private int duration;
-    //лайки пользователей (юзеров)
+    private Integer duration;
     private final Set<Integer> userLikes = new HashSet<>();
+    private Rating mpa;
+
+    private final LinkedHashSet<Genre> genres = new LinkedHashSet<>();
 
     public void setLike(int userId) {
         userLikes.add(userId);
+    }
+
+    public void setGenre(Genre genre) {
+        genres.add(genre);
     }
 
     public void deleteLike(int userId) {
@@ -44,14 +50,5 @@ public class Film implements Cloneable {
 
     public int getCountLikes() {
         return userLikes.size();
-    }
-
-    @Override
-    public Film clone() {
-        try {
-            return (Film) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new CloneException("Ошибка при копировании фильма!");
-        }
     }
 }

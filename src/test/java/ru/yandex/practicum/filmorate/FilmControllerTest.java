@@ -5,12 +5,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import ru.yandex.practicum.filmorate.common.CommonUtility;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -21,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
 @SpringBootTest
 public class FilmControllerTest {
     private final LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
@@ -45,6 +50,7 @@ public class FilmControllerTest {
                 .description("корректный фильм")
                 .duration(10)
                 .releaseDate(LocalDate.of(1970, 10, 5))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
         mockMvc.perform(
@@ -53,7 +59,7 @@ public class FilmControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.name").value("фильм"))
                 .andExpect(jsonPath("$.description").value("корректный фильм"));
     }
@@ -156,6 +162,7 @@ public class FilmControllerTest {
                 .description(longDescription.toString())
                 .duration(20)
                 .releaseDate(LocalDate.of(1970, 10, 5))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
         mockMvc.perform(
                         post("/films")
@@ -190,6 +197,7 @@ public class FilmControllerTest {
                 .description("описание фильма")
                 .duration(20)
                 .releaseDate(minReleaseDate)
+                .mpa(new Rating(1, "какой-то"))
                 .build();
         mockMvc.perform(
                         post("/films")
@@ -207,19 +215,22 @@ public class FilmControllerTest {
                 .description("описание фильма")
                 .duration(20)
                 .releaseDate(minReleaseDate)
+                .mpa(new Rating(1, "какой-то"))
                 .build();
-        mockMvc.perform(
+        MvcResult result = mockMvc.perform(
                 post("/films")
                         .content(objectMapper.writeValueAsString(film))
                         .contentType(MediaType.APPLICATION_JSON)
-        );
+        ).andReturn();
+        int idFilm = CommonUtility.getIdFromMvcResult(result);
 
         film = Film.builder()
-                .id(1)
+                .id(idFilm)
                 .name("изменил название")
                 .description("изменил описание")
                 .duration(22)
                 .releaseDate(LocalDate.of(2025, 7, 7))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
         mockMvc.perform(
@@ -228,7 +239,7 @@ public class FilmControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(idFilm))
                 .andExpect(jsonPath("$.name").value("изменил название"))
                 .andExpect(jsonPath("$.description").value("изменил описание"))
                 .andExpect(jsonPath("$.duration").value(22))
@@ -256,6 +267,7 @@ public class FilmControllerTest {
                 .description("изменил описание")
                 .duration(22)
                 .releaseDate(LocalDate.of(2025, 7, 7))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
         mockMvc.perform(
@@ -274,13 +286,15 @@ public class FilmControllerTest {
                 .description("его описание")
                 .duration(10)
                 .releaseDate(LocalDate.of(1970, 10, 5))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
-        mockMvc.perform(
+        MvcResult resultFilm = mockMvc.perform(
                 post("/films")
                         .content(objectMapper.writeValueAsString(film))
                         .contentType(MediaType.APPLICATION_JSON)
-        );
+        ).andReturn();
+        int filmId = CommonUtility.getIdFromMvcResult(resultFilm);
 
         User user = User.builder()
                 .name("Пользователь 1")
@@ -288,13 +302,14 @@ public class FilmControllerTest {
                 .birthday(LocalDate.now().minusYears(25))
                 .login("aaymail")
                 .build();
+        MvcResult resultUser = mockMvc.perform(
+                        post("/users")
+                                .content(objectMapper.writeValueAsString(user))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int userId = CommonUtility.getIdFromMvcResult(resultUser);
 
-        mockMvc.perform(
-                post("/users")
-                        .content(objectMapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        mockMvc.perform(put("/films/1/like/1"))
+        mockMvc.perform(put("/films/" + filmId + "/like/" + userId))
                 .andExpect(status().is(200));
     }
 
@@ -347,13 +362,15 @@ public class FilmControllerTest {
                 .description("его описание")
                 .duration(10)
                 .releaseDate(LocalDate.of(1970, 10, 5))
+                .mpa(new Rating(1, "какой-то"))
                 .build();
 
-        mockMvc.perform(
-                post("/films")
-                        .content(objectMapper.writeValueAsString(film))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+        MvcResult resultFilm = mockMvc.perform(
+                        post("/films")
+                                .content(objectMapper.writeValueAsString(film))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        int filmId = CommonUtility.getIdFromMvcResult(resultFilm);
 
         User user = User.builder()
                 .name("Пользователь 1")
@@ -362,16 +379,19 @@ public class FilmControllerTest {
                 .login("aaymail")
                 .build();
 
-        mockMvc.perform(
-                post("/users")
-                        .content(objectMapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON));
+        MvcResult resultUser = mockMvc.perform(
+                        post("/users")
+                                .content(objectMapper.writeValueAsString(user))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        int userId = CommonUtility.getIdFromMvcResult(resultUser);
 
         mockMvc.perform(
-                put("/films/1/like/1"));
+                put("/films/" + filmId + "/like/" + userId));
 
         mockMvc.perform(
-                        delete("/films/1/like/1"))
+                        delete("/films/" + filmId + "/like/" + userId))
                 .andExpect(status().is(200));
     }
 

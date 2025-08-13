@@ -15,4 +15,10 @@ public interface FilmStorage {
     Optional<Film> getFilmById(int id);
 
     void deleteAllFilms();
+
+    void setUsersLike(Film film, int userId);
+
+    void deleteUsersLike(Film film, int userId);
+
+    List<Film> getTopFilmsByLikes(int countFilms);
 }
